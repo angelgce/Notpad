@@ -140,8 +140,10 @@ public class Notpad extends JFrame {
                 FileDialog dialog = new FileDialog((this), "Select File to Open");
                 dialog.setMode(FileDialog.LOAD);
                 dialog.setVisible(true);
-                dialog.setFile("*.ace");
-                String path = dialog.getFile();
+                // dialog.setFile("*.ace");
+                String path = dialog.getDirectory() + dialog.getFile();
+                System.out.println("path: " + path);
+
                 if (path != null) {
                     StringBuilder txt = new StringBuilder();
                     try {
@@ -163,7 +165,7 @@ public class Notpad extends JFrame {
                     dialog.setMode(FileDialog.SAVE);
                     dialog.setFile("*.ace");
                     dialog.setVisible(true);
-                    String path = dialog.getFile();
+                    String path = dialog.getDirectory() + dialog.getFile();
                     if (path != null) {
                         try {
                             Files.write(Paths.get(path), boxtext.getText().getBytes());
@@ -187,7 +189,7 @@ public class Notpad extends JFrame {
                 dialog.setMode(FileDialog.SAVE);
                 dialog.setFile("*.ace");
                 dialog.setVisible(true);
-                String path = dialog.getFile();
+                String path = dialog.getDirectory() + dialog.getFile();
                 if (path != null) {
                     try {
                         Files.write(Paths.get(path), boxtext.getText().getBytes());
