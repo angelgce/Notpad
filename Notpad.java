@@ -33,8 +33,6 @@ public class Notpad extends JFrame {
         this.setSize(800, 500);
         this.setTitle(key);
         ///
-        ImageIcon imgicon = new ImageIcon(getClass().getResource("./webP.png"));
-        this.setIconImage(imgicon.getImage());
         // creo mi main panel
         JPanel mainPanel = new JPanel(null);
         mainPanel.setSize(800, 500);
@@ -201,10 +199,13 @@ public class Notpad extends JFrame {
             });
             // Exit event
             mapItems.get("Exit").addActionListener(event -> {
-                this.setVisible(false);
-                Engine.listNotpad.remove(key);
-                Notpad trash = this;
-                trash = null;
+                int input = JOptionPane.showConfirmDialog(null, "Do you want to close the file?");
+                if (input == 0) {
+                    this.setVisible(false);
+                    Engine.listNotpad.remove(key);
+                    Notpad trash = this;
+                    trash = null;
+                }
 
             });
 
