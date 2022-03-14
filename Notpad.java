@@ -1,14 +1,18 @@
 import java.awt.Color;
 import java.awt.FileDialog;
+import java.io.Console;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -24,6 +28,8 @@ public class Notpad extends JFrame {
     private JTextArea boxtext = new JTextArea();
     private String key;
     private int index = 1;
+    private JButton runButton = new JButton();
+    private Consola consola = new Consola();
 
     public Notpad() {
         Engine.count += 1;
@@ -46,6 +52,7 @@ public class Notpad extends JFrame {
         // Creo mi textArea para escribir
         boxtext = new JTextArea();
         boxtext.setBounds(0, 30, 790, 490);
+        boxtext.setFont(boxtext.getFont().deriveFont(18f));
         mainPanel.add(boxtext);
         // creare el Menu y submenus
         JMenuBar menuBar = new JMenuBar();
@@ -67,10 +74,20 @@ public class Notpad extends JFrame {
                 });
             } catch (Exception e) {
             }
-
             // add menu bar
             menuBar.add(menu);
         }
+        // botton run
+        runButton = new JButton();
+        runButton.setBounds(500, 10, 100, 130);
+        runButton.setText("RUN");
+        runButton.setLayout(null);
+        runButton.setForeground((new Color(0, 0, 0)));
+        runButton.setBackground((new Color(0, 255, 27)));
+        // runButton.setOpaque(false);
+        // runButton.setBorder(null);
+
+        menuBar.add(runButton);
         // cargo los eventos
         Events();
         this.setVisible(true);
@@ -207,6 +224,56 @@ public class Notpad extends JFrame {
                     trash = null;
                 }
 
+            });
+            // Run event
+
+            runButton.addActionListener(event -> {
+                // Creo mi consola (si esta creada la reinicio)
+                consola.setVisible(false);
+                consola = null;
+                consola = new Consola();
+                // Strings para guardar lso mensajes en consola
+                StringBuilder errorSring = new StringBuilder();
+                StringBuilder correctString = new StringBuilder();
+                errorSring.append("<html>");
+                correctString.append("<html>");
+                // Obtengo las lineas del bloc de notas
+                String[] lines = boxtext.getText().split("\\n");
+                AtomicBoolean error = new AtomicBoolean(false);
+                AtomicInteger lineNumber = new AtomicInteger(0);
+                // valido las reglas de mi sintaxis
+                Rules rule = new Rules();
+                Arrays.asList(lines).forEach(line -> {
+                    lineNumber.set(lineNumber.get() + 1); // Voy linea por linea
+                    if (rule.errorKeyWords(line) == false) { // ErrorKeyWords detecta si escribiern mal algun token
+                        error.set(true);
+                        errorSring.append(
+                                "Error en la linea " + lineNumber + " :: ERROR 53 :: PALABRA CLAVE <br>");
+                    } else { // si no hay error de palabras claves
+                        String txt = rule.showWord(line); // valido que sea una palabra a mostrar
+                        if (txt != null) {
+                            correctString.append(txt + "<br>");
+                            // validamos si es alguna variable a guardar
+                        } else if (rule.saveData(line) == false) {
+                            error.set(true);
+                            errorSring.append(
+                                    "Error en la linea " + lineNumber + " Posibles errores: <br>"
+                                            + " :: ERROR 23 ::NO SE ENCUENTRA LA VARIABLE SOLICITADA <br>"
+                                            + " :: ERROR 48 :: NO SE PUDO GUARDAR TU INFORMACION REVISA LA SINTAXIS <br>");
+                        }
+                    }
+                });
+                errorSring.append("</html>");
+                correctString.append("</html>");
+                if (error.get() == true) { // si hay un errorL
+                    consola.getLabel().setText(errorSring.toString());
+                    consola.getLabel().setForeground(Color.RED);
+                    consola.setVisible(true);
+                } else { // si no hay errores
+                    consola.getLabel().setText(correctString.toString());
+                    consola.getLabel().setForeground(Color.WHITE);
+                    consola.setVisible(true);
+                }
             });
 
         } catch (Exception e) {
