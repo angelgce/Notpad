@@ -1,0 +1,30 @@
+Tkn_ID ,a-z,_ se considera otra letra,[\\^A-z].+
+Tkn_OpAr,-+ */,Resta Suma Mult Div,[-|+|*|/]
+Tkn_Null,null,null,null
+Tkn_ValNum,0-9,null,[0-9]
+Tkn_Bool,SIPOSSI-NOPOSNO,Bool,(SIPOSSI|NOPOSNO)
+Tkn_Cad,"""a-z""",‘ texto ‘  “texto”+,"([\\^""].+[\\$""])"
+Tkn_TD,Ent Do Flo Car Cad Boo,Entero Doble Flotante Caracter Cadena Boolean,(Ent[\\s]|Do[\\s]|Flo[\\s]|Car[\\s]|Cad[\\s]|Boo[\\s])
+Tkn_Imp,WACHATE,Imprime a consola,(WACHATE)
+Tkn_LlaveAbre,{,Abre bloques de código,[{]
+Tkn_LlaveCierra,},Cierra bloques de código,[}]
+Tkn_ParAbre,(,Abre parámetros,[(]
+Tkn_ParCierra,),Cierra parámetros,[)]
+Tkn_Log,& | -!,"And, or, not",(&|!+|\|)
+Tkn_Comp,= | < | > ,igual-menor-mayor,(=|<|>)
+Tkn_Asig,:,Asignación,(:)
+Tkn_For,ITERALE,Ciclo (For),(ITERALE)
+Tkn_While,DURANTE,Ciclo (While),(DURANTE)
+Tkn_IF,QPDO,Condición (if),(QPDO)
+Tkn_Else,SINO,Condición (Else),(SINO)
+Tkn_Switch,AVERQPDO,Condición (Switch),(AVERQPDO)
+Tkn_Case,DEPENDEDE,Condición (Case),(DEPENDEDE)
+Tkn_Default,AYWEY,Default,(AYWEY)
+Tkn_Return,AHITEVA,(Return),(AHITEVA)
+Tkn_Break,PARALE,(Break),(PARALE)
+Tkn_ModAcc,PUBLICO PRIVADO,Modos de acceso,(PUBLICO|PRIVADO)
+Tkn_FM,FUNC-MET,"Función, Método",(FUNC-MET)
+Tkn_Class,ROLLO,Class,(ROLLO)
+Tkn_Main,SOBRES,Ejecutable o Main dentro de la clase,(SOBRES)
+Tkn_ComillaAbre,"\\""",Abre cadena de caracteres,"[\\^""].+"
+TknComillaCierra,"\\""",Cierra cadena de caracteres,".+[\\$""]"
