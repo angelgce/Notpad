@@ -15,14 +15,14 @@ public class Rules {
     }
 
     public boolean errorKeyWords(String string) { // 53
-        Pattern pattern = Pattern.compile("(Guarda_.+|Muestra:.+)");
+        Pattern pattern = Pattern.compile("(Guarda_.+|Wachate:.+)");
         Matcher matcher = pattern.matcher(string);
         return matcher.matches();
     }
 
     public String showWord(String string) { // 53
 
-        Pattern pattern = Pattern.compile("Muestra:(.+)");
+        Pattern pattern = Pattern.compile("Wachate:(.+)");
         Matcher matcher = pattern.matcher(string);
         if (matcher.matches()) {
             String msj = matcher.group(1);
@@ -68,7 +68,7 @@ public class Rules {
     }
 
     public Boolean saveData(String string) {
-        // Guardamos los numeros...
+        // saving los numeros...
         Pattern pattern = Pattern.compile("Guarda_numero:.(.+)en:.(.+)");
         Matcher matcher = pattern.matcher(string);
         if (matcher.matches()) {
@@ -84,7 +84,7 @@ public class Rules {
             } catch (Exception e) {
             }
         }
-        // Guardamos los Strings...
+        // saving los Strings...
         pattern = Pattern.compile("Guarda_texto:.(.+)en:.(.+)");
         matcher = pattern.matcher(string);
         if (matcher.matches()) {
