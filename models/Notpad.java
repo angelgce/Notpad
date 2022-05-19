@@ -255,20 +255,27 @@ public class Notpad extends JFrame {
 
                     String[] out = boxtext.getText().split("\n");
 
-                    Arrays.asList(out).forEach(line -> {
-
-                        // vemos que escribo el wey
+                    Arrays.asList(out).forEach(line -> { // lines of the textarea
                         outTxt.append("\n---> Line #" + index.get() + " <---");
                         outTxt.append("\nString :: " + line + "\n");
                         AtomicBoolean isMatch = new AtomicBoolean(false);
-                        // comparamso con los tokens
+                        // Tokens comparation
                         Engine.tokens.forEach(token -> {
+                            // removing the \"" from cvs format
+                            String strToken = token.getRegx();
+                            if (strToken.startsWith("\"")) {
+                                strToken = token.getRegx().substring(1);
+                                strToken = strToken.replaceFirst(".$", "");
+                                token.setRegx(strToken);
+                            }
+                            System.out.println(strToken);
+                            // matching
                             Pattern pattern = Pattern.compile(token.getRegx());
                             Matcher matcher = pattern.matcher(line);
                             while (matcher.find()) {
+                                System.out.println("Match with :: " + token.getRegx());
                                 isMatch.set(true);
                                 outTxt.append(token.toString() + "\n");
-
                             }
                         });
 

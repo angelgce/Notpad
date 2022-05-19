@@ -3,16 +3,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import org.ini4j.Ini;
+
 
 public class Engine {
     public static HashMap<String, Notpad> listNotpad = new HashMap<String, Notpad>();
     public static List<Token> tokens;
     public static int count = 0;
+    private static Config config;
 
     public static void main(String[] args) {
-        loadTokens();
-        // tokens.forEach(token -> System.out.println(token.toString() + "\n"));
-        Notpad bloc = new Notpad();
+        // Loading config.ini
+        config = Config.getInstance(args);
+        loadTokens(); // Loading tokens from csv
+        Notpad notpad = new Notpad(); // starting notpad
         Thread hilo = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -46,16 +50,17 @@ public class Engine {
     }
 
     private static void loadTokens() {
-        System.out.println("Loading");
+
+        Ini.Section section = Config.ini.get("CSV");
+        String path = section.get("path");
+        System.out.println("path:: " +path);
+        System.out.println(path);
         tokens = new ArrayList<Token>();
-        String path = "C:\\Users\\abricot\\Documents\\Notpad\\resources\\tokens.csv";
         try {
             int index = 1;
             Scanner sc = new Scanner(new File(path));
-            // sc.useDelimiter(",");
-
             while (sc.hasNext()) {
-                // System.out.println(sc.nextLine() + " :: " + index);
+                // POJO - Tokens
                 Token token = new Token();
                 token.setId(index);
                 token.setCSV(sc.nextLine());
