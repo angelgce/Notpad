@@ -57,5 +57,8 @@ Cuerpo5':#
 Cuerpo6:#
 ID:Tkn_ID
 ID:E
-VAR:Tkn_ID Tkn_End
+VAR1:Tkn_TD Tkn_ID Tkn_End
+VAR2:Tkn_TD Tkn_ID Tkn_Asig Tkn_ID Tkn_End
+VAR3:Tkn_TD Tkn_ID Tkn_Asig Tkn_ValNum Tkn_End
+VAR4:Tkn_TD Tkn_ID Tkn_Asig Tkn_Cad Tkn_End
 Main:Tkn_Main ModAcc Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra

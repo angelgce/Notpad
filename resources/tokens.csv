@@ -4,7 +4,7 @@ Tkn_Null,null,null,null
 Tkn_ValNum,0-9,valor numerico,\b[0-9\.]+\b
 Tkn_Bool,SIPOSSI-NOPOSNO,Bool,(SIPOSSI|NOPOSNO)
 Tkn_Cad,"""a-z""",‘ texto ‘  “texto”+,"[\\^""][\S]+[\\$""]"
-Tkn_TD,Ent Do Flo Car Cad Boo,Entero Doble Flotante Caracter Cadena Boolean,(Ent|Do|Flo|Car|Cad|Boo)([\s][\^A-z][\S]+)
+Tkn_TD,Ent Do Flo Car Cad Boo,Entero Doble Flotante Caracter Cadena Boolean,(^Ent$|^Do$|^Flo$|^Car$|^Cad$|^Boo$)
 Tkn_Imp,WACHATE,Imprime a consola,(WACHATE)
 Tkn_LlaveAbre,{,Abre bloques de código,[{]
 Tkn_LlaveCierra,},Cierra bloques de código,[}]

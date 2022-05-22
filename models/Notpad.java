@@ -352,22 +352,24 @@ public class Notpad extends JFrame {
                                 Pattern pattern = Pattern.compile(csvToken.getRegx());
                                 Matcher matcher = pattern.matcher(word);
                                 while (matcher.find()) {
+                                    String matchWod = matcher.group(0).replaceAll(" ", "");
                                     boolean sendInfo = true;
                                     // ----| validation of the reserved words |----
                                     if (csvToken.getId() == 1 &&
-                                            Engine.validationRW(matcher.group(0).replaceAll(" ", ""))) {
+                                            Engine.validationRW(matchWod)) {
                                         sendInfo = false;
                                     }
                                     // ----| append information to the final stringnuilder |----
                                     if (sendInfo) {
                                         isToken.set(true);
                                         outTxt.append(csvToken.toString() + "\n");
-                                        outTxt.append(" String :: " + matcher.group(0) + "\n");
+                                        outTxt.append(" String :: " + matchWod + "\n");
                                         // ignoring blank space
                                         if (!csvToken.getTkn_id().equals("Tkn_Blank")) {
                                             Token token = new Token();
                                             token.setTkn_id(csvToken.getTkn_id());
                                             token.setLine(indexLine.get());
+                                            token.setLexema(matchWod);
                                             matchedTokens.add(token);
                                         }
                                     }

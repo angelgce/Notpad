@@ -43,9 +43,9 @@ public class Syntactic {
         result = new StringBuilder();
         isError = false;
         mainRule();
-        bodyRule();
+        fillBody();
         openCloseRule();
-        varRule();
+        bodyRules();
 
         if (isError) {
             int count = result.toString().split("\n").length;
@@ -113,6 +113,9 @@ public class Syntactic {
     }
 
     private void openCloseRule() {
+        if (isError) {
+            return;
+        }
         // ----| Verification of open and close symbols |----
         // ----| Creating a counter for each symbole to verify |----
         AtomicInteger[] symbolCount = new AtomicInteger[4]; // { } ( ) = 4
@@ -173,7 +176,10 @@ public class Syntactic {
 
     }
 
-    private void bodyRule() {
+    private void fillBody() {
+        if (isError) {
+            return;
+        }
         // ----| Finding the tokens that are part of the body |----
         // ----| Set how many tokens are in the main before body starts |----
         int tokensBeforeBody = 4;
@@ -188,21 +194,84 @@ public class Syntactic {
 
     }
 
-    private void varRule() {
+    private void bodyRules() {
+        if (isError) {
+            return;
+        }
+        System.out.println("-------------------------------");
+        System.out.println("\nBODY Syntactic Tokens :: \n");
+        // Missing tokens
+        System.out.println("Missing tokens :: ");
+        bodyTokens.forEach(token -> {
+            System.out.println(token.getTkn_id() + " -> " + token.getLexema() + " -> " + token.getLine());
+
+        });
+        // Body Rule #1 First TOKEN
+        // is a reserved word ???
+        if (Engine.validationRW(bodyTokens.get(0).getLexema())) {
+            String firstToken = bodyTokens.get(0).getTkn_id();
+            switch (firstToken) {
+                case "Tkn_TD":
+                    varRules();
+                    break;
+                case "Tkn_IF":
+                    ifRules();
+                    break;
+                case "Tkn_For":
+                    forRules();
+                    break;
+            }
+        } else { // is a VAR
+            isNotRW();
+        }
+
+    }
+
+    private void varRules() {
+        HashMap<String, List<String>> muyRules = getMapRules("VAR");
+
+    }
+
+    private void ifRules() {
+
+    }
+
+    private void forRules() {
+
+    }
+
+    private void isNotRW() {
+        // first rule of a var
+        System.out.println("Error :: its NOT a reserved word");
+        String firsToken = "Tkn_TD";
+        if (!bodyTokens.get(0).getTkn_id().equals(firsToken)) {
+            errorMsg(bodyTokens.get(0).getLine(), firsToken);
+        }
+    }
+
+    private void errorMsg(int line, String expect) {
+        result.append("syntax error on line " + line + " expected \"" + expect + "\n");
+        isError = true;
+    }
+
+    private void errorMsg(String expect) {
+        result.append("syntax error, missing \"" + expect + "\n");
+        isError = true;
+    }
+
+    private HashMap<String, List<String>> getMapRules(String KEY) {
         // ----| Getting thhe Main rules from dictonary.agce |----
-        List<String> syntacticRules = new ArrayList<String>();
-        bodyTokens.clear();
-        Engine.hashRules.get("VAR").getRules().forEach(rule -> {
-            if (rule.startsWith("Tkn")) {
-                syntacticRules.add(rule);
-            } else { // ----| if the rule has another rule ... |----
-                Engine.hashRules.get(rule).getRules().forEach(rule2 -> {
-                    syntacticRules.add(rule2);
+        HashMap<String, List<String>> syntacticRules = new HashMap<String, List<String>>();
+        Engine.hashRules.forEach((key, rules) -> {
+            if (key.contains(KEY)) {
+                List<String> items = new ArrayList<String>();
+                rules.getRules().forEach(rule -> {
+                    items.add(rule);
                 });
+                syntacticRules.put(key, items);
             }
         });
-        // ----| MAIN ENGINE |----
-
+        return syntacticRules;
     }
 
 }
