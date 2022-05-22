@@ -6,8 +6,17 @@ public class Token {
     private String description;
     private String regx;
     private String CSV;
+    private int line;
 
     public Token() {
+    }
+    
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
     }
 
     public String getCSV() {
@@ -61,6 +70,13 @@ public class Token {
             lexema = split[1];
             description = split[2];
             regx = split[3];
+
+            // removing the \"" from cvs format
+            if (regx.startsWith("\"")) {
+                String formatRegx = regx.substring(1);
+                formatRegx = formatRegx.replaceFirst(".$", "");
+                regx = formatRegx;
+            }
         } catch (Exception e) {
             System.out.println("Error parsingCSV :: " + e.getMessage());
         }

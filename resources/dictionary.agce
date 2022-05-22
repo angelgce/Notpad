@@ -1,0 +1,61 @@
+E:T E'
+E':+ T E'
+T:F T'
+T':- F T'
+F:G F'
+F':/ G F'
+G:H G'
+G':* H G'
+H:Tkn_ParAbre E Tkn_ParCierra
+H:Tkn_ValNum
+H:Tkn_ID
+E':#
+T':#
+F':#
+G':#
+Var:Var2 E Var'
+Var':Var Var'
+Var2:Tkn_TD Tkn_ID:E
+Var2:#
+Ciclo:Tkn_For Tkn_ParAbre Props Tkn_ParCierra Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra
+Props:Tkn_ID Cond Tkn_ID++
+Props:Tkn_ID Cond Tkn_ID--
+Cond:Tkn_ID Comp Tkn_ValNum
+Comp:Tkn_Comp
+Ciclo:#
+Ciclo2:Tkn_While Tkn_ParAbre Cond Tkn_ParCierra Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra
+Ciclo2:#
+Imp:Tkn_Imp Tkn_ParAbre Cadenas Tkn_ParCierra
+Cadenas:Cadenas2 Cadenas'
+Cadenas':+ Cadenas2 Cadenas'
+Cadenas2:Tkn_Cad
+Cadenas:#
+Cadenas2:#
+Imp:#
+If:Tkn_If Tkn_ParAbre Cond Tkn_ParCierra Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra Else
+Else:Tkn_Else Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra
+Else:#
+Bools:Tkn_Bool
+ModAcc:Tkn_ModAcc Tkn_ID 
+Clase:Tkn_Class ModAcc Tkn_ID Tkn_LlaveAbre Main Tkn_LlaveCierra
+Cuerpo:Cuerpo2 Cuerpo'
+Cuerpo':Var Cuerpo2 Cuerpo'
+Cuerpo2:Cuerpo3 Cuerpo2'
+Cuerpo2':Ciclo Cuerpo3 Cuerpo2'
+Cuerpo3:Cuerpo4 Cuerpo2'
+Cuerpo3':Ciclo2 Cuerpo4 Cuerpo3'
+Cuerpo4:Cuerpo5 Cuerpo4'
+Cuerpo4':If Cuerpo5 Cuerpo4'
+Cuerpo5:Cuerpo6 Cuerpo5'
+Cuerpo5':Imp Cuerpo6 Cuerpo5'
+Cuerpo6:E
+Cuerpo1':#
+Cuerpo2':#
+Cuerpo3':#
+Cuerpo4':#
+Cuerpo5':#
+Cuerpo6:#
+ID:Tkn_ID
+ID:E
+VAR:Tkn_ID Tkn_End
+Main:Tkn_Main ModAcc Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra
