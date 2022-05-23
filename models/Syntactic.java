@@ -87,10 +87,7 @@ public class Syntactic {
                 if (usrToken.contains(synToken)) {
                     System.out.println("[" + synToken + "]::[" + usrToken + "] -> MATCH <-");
                 } else {
-                    result.append("syntax error on line " + usrLine + " expected \"" + synToken + "\n");
-                    System.out.println(
-                            "[" + synToken + "]::[" + usrToken + "] -> ERROR <-");
-                    isError = true;
+                    errorMsg(result, usrLine, synToken);
                 }
             }
             synIndex.getAndIncrement();
@@ -167,9 +164,7 @@ public class Syntactic {
                     }
                 }
                 // ----| Updating result text |----
-                result.append("syntax error, missing \"" + symbol + "\n");
-                System.out.println("syntax error, missing \"" + symbol);
-                isError = true;
+                errorMsg(result, symbol);
             }
 
         }
@@ -198,6 +193,7 @@ public class Syntactic {
         if (isError) {
             return;
         }
+        // ----| Starting Engine for body Tokens |----
         System.out.println("-------------------------------");
         System.out.println("\nBODY Syntactic Tokens :: \n");
         // Missing tokens
@@ -206,10 +202,14 @@ public class Syntactic {
             System.out.println(token.getTkn_id() + " -> " + token.getLexema() + " -> " + token.getLine());
 
         });
-        // Body Rule #1 First TOKEN
-        // is a reserved word ???
+        // ----| Step 1 |----
+        // ----| First word must to be a reserved word (RW)
+        // ----| va, if, for, someting...|---
+        // ----| Validation if the first token is RW |----
         if (Engine.validationRW(bodyTokens.get(0).getLexema())) {
             String firstToken = bodyTokens.get(0).getTkn_id();
+            // ----| Step 2 |----
+            // ----| if the first token is RW we call their method |----
             switch (firstToken) {
                 case "Tkn_TD":
                     varRules();
@@ -220,19 +220,169 @@ public class Syntactic {
                 case "Tkn_For":
                     forRules();
                     break;
+                // ----|END PROCESS|----
             }
-        } else { // is a VAR
-            isNotRW();
+        } else {
+            // ----| Sending error if is n't a RW |----
+            if (!bodyTokens.get(0).getTkn_id().equals("Tkn_TD")) {
+                errorMsg(result, bodyTokens.get(0).getLine(), "Tkn_TD");
+            }
         }
 
     }
 
     private void varRules() {
-        HashMap<String, List<String>> muyRules = getMapRules("VAR");
+        // ----| Variable Rules |----
+        // ----| Step 1 |----
+        // ----| Variable must to end with a Tkn_End |---- ;
+        System.out.println("\nVar Tokens ::\n");
+        List<Token> sentence = new ArrayList<Token>();
+        boolean isTokenEnd = false;
+        for (Token token : bodyTokens) {
+            if (token.getTkn_id().equals("Tkn_End")) {
+                isTokenEnd = true;
+                break;
+            }
+        }
+        // ----| Step 2 |----
+        if (isTokenEnd) {
+            // ----| Shorting the bodyTokens list with first sentence |----
+            for (Token token : bodyTokens) {
+                String tkn_id = token.getTkn_id();
+                if (tkn_id.equals("Tkn_End")) {
+                    sentence.add(token);
+                    break;
+                } else {
+                    sentence.add(token);
+                }
+            }
+            // ----| Step 3 |----
+            HashMap<String, List<String>> myRules = getMapRules("VAR");
+            StringBuilder varErrors = new StringBuilder();
+            Boolean[] isMatch = new Boolean[myRules.size()];
+            String[] rulesKeys = new String[myRules.size()];
+            for (int i = 0; i < isMatch.length; i++) {
+                isMatch[i] = true;
+            }
+            // ----| loop through VAR rules |----
+            AtomicInteger ruleIndex = new AtomicInteger(0);
+            myRules.forEach((keyRule, ruleList) -> {
+                System.out.println("\nRule [" + keyRule + "]");
+                rulesKeys[ruleIndex.get()] = keyRule;
+                int tokenCount = 0;
+                try {
+                    for (Token token : bodyTokens) {
+                        String bodyToken = token.getTkn_id();
+                        String rule = ruleList.get(tokenCount);
+                        if (bodyToken.contains(rule)) {
+                            System.out.println("[" + rule + "] :: [" + bodyToken + "] MATCH");
+                        } else {
+                            System.out.println("[" + rule + "] :: [" + bodyToken + "] ERROR");
+                            errorMsg(varErrors, token.getLine(), rule);
+                            isMatch[ruleIndex.get()] = false;
+                            break;
+                        }
+                        tokenCount++;
+                    }
+                } catch (Exception e) {
+                }
+                ruleIndex.getAndIncrement();
+            });
+
+            // ----| Step 4 |----
+            // ----| Validating if there is a match |----
+            boolean isAny = false;
+            int ruleMatch = 0;
+            for (Boolean match : isMatch) {
+                if (match) {
+                    isAny = true;
+                    break;
+                }
+                ruleMatch++;
+            }
+            // ----| Sending error if there's not rule matched |----
+            if (!isAny) {
+                result.append(varErrors);
+            } else {
+                // ----| Step 5 |----
+                // ----| Removing the completed bodyTokens |----
+                isError = false;
+                List<Token> last = new ArrayList<Token>();
+                int usedTokens = myRules.get(rulesKeys[ruleMatch]).size();
+                for (int i = usedTokens; i < bodyTokens.size(); i++) {
+                    last.add(bodyTokens.get(i));
+                }
+                bodyTokens = new ArrayList<Token>();
+                bodyTokens = last;
+                bodyTokens.forEach(item -> System.out.println(item.getTkn_id()));
+                // ----| Step 6 |----
+                // ----| Calling again |----
+                if (bodyTokens.size() > 0) {
+                    bodyRules();
+                }
+            }
+
+        } else {// ----| Step 2 |----
+            // ----| Sending error if doesnt end with a Tkn_end |----
+            errorMsg(result, "Tkn_End");
+        }
 
     }
 
     private void ifRules() {
+        // ----| Getting thhe Main rules from dictonary.agce |----
+        List<String> ifRules = new ArrayList<String>();
+        Engine.hashRules.get("IF").getRules().forEach(rule -> {
+            ifRules.add(rule);
+        });
+
+        // ----| MAIN ENGINE |----
+        System.out.println("-------------------------------");
+        System.out.println("\nIF Syntactic Tokens :: \n");
+        // ----| loop through IF rules |----
+        int limit = ifRules.size() - 2;
+        for (int i = 0; i < limit; i++) {
+            String rule = ifRules.get(i);
+            String token = "";
+            try {
+                token = bodyTokens.get(i).getTkn_id();
+            } catch (Exception e) {
+            }
+            if (token.contains(rule)) {
+                System.out.println("[" + rule + "]::[" + token + "] -> MATCH <-");
+            } else {
+                System.out.println("[" + rule + "]::[" + token + "] -> ERROR <-");
+                errorMsg(result, bodyTokens.get(i).getLine(), rule);
+                break;
+            }
+        }
+        // ----| Step 5 |----
+        System.out.println("\n\n\n MISSING tokens");
+        boolean onDelete = false;
+        List<Token> last = new ArrayList<Token>();
+        for (int i = limit; i < bodyTokens.size(); i++) {
+            String lastToken = "";
+            try {
+                lastToken = bodyTokens.get(i).getTkn_id();
+                if (lastToken.equals("Tkn_LlaveCierra") && !onDelete) {
+                    onDelete = true;
+                } else {
+                    last.add(bodyTokens.get(i));
+                }
+            } catch (Exception e) {
+            }
+
+        }
+        // // ----| Removing the completed bodyTokens |----
+        bodyTokens = new ArrayList<Token>();
+        bodyTokens = last;
+        for (Token token : bodyTokens) {
+            System.out.println(token.getTkn_id());
+        }
+        // ----| Calling again |----
+        if (bodyTokens.size() > 0) {
+            bodyRules();
+        }
 
     }
 
@@ -240,21 +390,12 @@ public class Syntactic {
 
     }
 
-    private void isNotRW() {
-        // first rule of a var
-        System.out.println("Error :: its NOT a reserved word");
-        String firsToken = "Tkn_TD";
-        if (!bodyTokens.get(0).getTkn_id().equals(firsToken)) {
-            errorMsg(bodyTokens.get(0).getLine(), firsToken);
-        }
-    }
-
-    private void errorMsg(int line, String expect) {
+    private void errorMsg(StringBuilder result, int line, String expect) {
         result.append("syntax error on line " + line + " expected \"" + expect + "\n");
         isError = true;
     }
 
-    private void errorMsg(String expect) {
+    private void errorMsg(StringBuilder result, String expect) {
         result.append("syntax error, missing \"" + expect + "\n");
         isError = true;
     }
