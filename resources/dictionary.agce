@@ -36,8 +36,6 @@ If:Tkn_If Tkn_ParAbre Cond Tkn_ParCierra Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra El
 Else:Tkn_Else Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra
 Else:#
 Bools:Tkn_Bool
-ModAcc:Tkn_ModAcc Tkn_ID 
-Clase:Tkn_Class ModAcc Tkn_ID Tkn_LlaveAbre Main Tkn_LlaveCierra
 Cuerpo:Cuerpo2 Cuerpo'
 Cuerpo':Var Cuerpo2 Cuerpo'
 Cuerpo2:Cuerpo3 Cuerpo2'
@@ -55,10 +53,17 @@ Cuerpo3':#
 Cuerpo4':#
 Cuerpo5':#
 Cuerpo6:#
-ID:Tkn_ID
-ID:E
+ModAcc:Tkn_ModAcc Tkn_ID 
 VAR1:Tkn_TD Tkn_ID Tkn_End
 VAR2:Tkn_TD Tkn_ID Tkn_Asig Tkn_ValNum Tkn_End
 VAR3:Tkn_TD Tkn_ID Tkn_Asig Tkn_Cad Tkn_End
+VAR4:Tkn_TD Tkn_ID Tkn_Asig Tkn_Bool Tkn_End
 Main:Tkn_Main ModAcc Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra
 IF:Tkn_IF Tkn_ParAbre Tkn_ID Tkn_Comp Tkn_ValNum Tkn_ParCierra Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra
+FOR:Tkn_IF Tkn_ParAbre Tkn_ID Tkn_Comp Tkn_ValNum Tkn_ParCierra Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra
+FOR:Tkn_For Tkn_ParAbre Tkn_ValNum Tkn_End Tkn_Comp Tkn_ValNum Tkn_End Tkn_ParCierra Tkn_LlaveAbre Cuerpo Tkn_LlaveCierra
+Ent:([0-9]+) Entero
+Do:([0-9]+[.][0-9]+|[0-9]+) Double
+Flo:([0-9]+[.][0-9]+) Flotante
+Cad:([\\^'].+[\\$']) Texto
+Boo:(SIPOSSI|NOPOSNO) Booleano

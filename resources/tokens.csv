@@ -1,7 +1,7 @@
 Tkn_ID ,a-z,_ se considera otra letra,(^[A-z]+|[\s][A-z]+)
 Tkn_OpAr,-+ */,Resta Suma Mult Div,[-|+|*|/]
 Tkn_Null,null,null,null
-Tkn_ValNum,0-9,valor numerico,\b[0-9\.]+\b
+Tkn_ValNum,0-9,valor numerico,([0-9]+[.][0-9]+|[0-9]+)
 Tkn_Bool,SIPOSSI-NOPOSNO,Bool,(SIPOSSI|NOPOSNO)
 Tkn_Cad,a-z',‘ texto ‘,[\\^'].+[\\$']
 Tkn_TD,Ent Do Flo Car Cad Boo,Entero Doble Flotante Caracter Cadena Boolean,(^Ent$|^Do$|^Flo$|^Car$|^Cad$|^Boo$)

@@ -215,10 +215,10 @@ public class Syntactic {
                     varRules();
                     break;
                 case "Tkn_IF":
-                    ifRules();
+                    toolsRules("IF");
                     break;
                 case "Tkn_For":
-                    forRules();
+                    toolsRules("FOR");
                     break;
                 // ----|END PROCESS|----
             }
@@ -329,10 +329,10 @@ public class Syntactic {
 
     }
 
-    private void ifRules() {
+    private void toolsRules(String keyRule) {
         // ----| Getting thhe Main rules from dictonary.agce |----
         List<String> ifRules = new ArrayList<String>();
-        Engine.hashRules.get("IF").getRules().forEach(rule -> {
+        Engine.hashRules.get(keyRule).getRules().forEach(rule -> {
             ifRules.add(rule);
         });
 
@@ -344,15 +344,21 @@ public class Syntactic {
         for (int i = 0; i < limit; i++) {
             String rule = ifRules.get(i);
             String token = "";
+            int line = 0;
             try {
                 token = bodyTokens.get(i).getTkn_id();
+                line = bodyTokens.get(i).getLine();
             } catch (Exception e) {
             }
             if (token.contains(rule)) {
                 System.out.println("[" + rule + "]::[" + token + "] -> MATCH <-");
             } else {
                 System.out.println("[" + rule + "]::[" + token + "] -> ERROR <-");
-                errorMsg(result, bodyTokens.get(i).getLine(), rule);
+                if (line == 0) {
+                    errorMsg(result, rule);
+                } else {
+                    errorMsg(result, line, rule);
+                }
                 break;
             }
         }

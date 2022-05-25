@@ -405,10 +405,20 @@ public class Notpad extends JFrame {
                 syntactic.runParser();
                 if (syntactic.isError()) {
                     resultSintac.setForeground(Color.RED);
+                    resultSintac.setText(syntactic.getResult().toString());
                 } else {
-                    resultSintac.setForeground(new Color(4, 123, 43));
+                    Semantic semantic = new Semantic();
+                    semantic.setTextBox(boxtext.getText());
+                    semantic.semanticValidation();
+                    if (semantic.isError()) {
+                        resultSintac.setForeground(Color.RED);
+                        resultSintac.setText(semantic.getError().toString());
+
+                    } else {
+                        resultSintac.setForeground(new Color(4, 123, 43));
+                        resultSintac.setText(syntactic.getResult().toString());
+                    }
                 }
-                resultSintac.setText(syntactic.getResult().toString());
 
             } else {
                 JOptionPane.showMessageDialog(null, "no data to be analyzed");
